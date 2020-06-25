@@ -22,14 +22,6 @@ def check_if_int(answer):
     else:
         return True
 
-# answer = input ('\n'+operation + ' = ')
-
-# def if_not_int(answer, operation):
-#     print('Your answer cannot contain anything other than numbers. Please try again: ')
-#     answer = input ('\n'+operation + ' = ')
-#     return answer
-
-
 def addition(a, b):
     operation = f"{a} + {b}"
     answer = input(operation + ' = ')
@@ -54,8 +46,6 @@ def subtraction(a, b):
     operation = f"{a} - {b}"
     answer = input (operation + ' = ')
 
-    # while check_if_int(answer) == False:
-    #     if_not_int(answer, operation)
     while check_if_int(answer) == False:
         answer = input ('\n'+operation + ' = ')
 
@@ -69,8 +59,7 @@ def subtraction(a, b):
 def multiplication(a, b):
     operation = f"{a} * {b}"
     answer = input(operation + ' = ')
-    # while check_if_int(answer) == False:
-    #     if_not_int(answer, operation)
+
     while check_if_int(answer) == False:
         answer = input ('\n'+operation + ' = ')
     if eval(operation) == int(answer):
@@ -95,9 +84,14 @@ difficulty_lvls = {
 
 name = input('Please enter your name: ').title()
 difficulty = input("Difficulty level (easy, intermediate, difficult, expert): ")
-while difficulty in difficulty_lvls == False:
+while difficulty not in difficulty_lvls:
     difficulty = input("\nYou chose a non-existent level."\
         "Please try again(easy, intermediate, difficult, expert): ")
+
+#     while False
+# while difficulty in difficulty_lvls == False:
+    # difficulty = input("\nYou chose a non-existent level."\
+    #     "Please try again(easy, intermediate, difficult, expert): ")
 
 with open(file_name) as f:
     contents = f.read()
@@ -152,6 +146,3 @@ while True:
                 print(f"\nNew difficulty level: {difficulty.title()}\n")
                 with open(file_name, 'a') as f:
                     f.write('\n\t'+difficulty.title()+'\n')
-
-
-# print("Oof, doesn't look like you're doing so well. Would you like to change the difficulty level?")
