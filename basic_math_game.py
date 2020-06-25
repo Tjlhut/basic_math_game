@@ -4,42 +4,42 @@ now = datetime.now()
 current_time = now.strftime("%d/%m/%Y")
 file_name = "math_game_log.txt"
 
-
 # Functions
 
 def append_wrong_answer(answer,operation,file_name=file_name):
     with open(file_name, 'a') as f:
-        f.write(f'\tIncorrect answer: {operation}, Actual: {answer}, '\
+        f.write(f'\tExpression: {operation}, User Input: {answer}, '\
             f'Expected: {eval(operation)}\n')
 
 def check_if_int(answer):
-    '''Check if the input is an integer. We need to ignore negative signs
-    as they fail the .isdigit() test. '''
-    if answer[0]=='-':
-        answer = answer[1:]
-    return answer.isdigit()
+    '''Checks if the input is an integer. '''
+    try:
+        int(answer)
+    except ValueError:
+        print('Your answer cannot contain anything other than numbers. Please try again: ')
+        return False
 
+    else:
+        return True
 
-def must_return_int(answer, operation):
-    print('Your answer cannot contain anything other than numbers. Please try again: ')
-    print(operation)
-    answer = input ('\n'+operation + ' = ')
-    return answer
+# answer = input ('\n'+operation + ' = ')
 
-
+# def if_not_int(answer, operation):
+#     print('Your answer cannot contain anything other than numbers. Please try again: ')
+#     answer = input ('\n'+operation + ' = ')
+#     return answer
 
 
 def addition(a, b):
     operation = f"{a} + {b}"
     answer = input(operation + ' = ')
-    # while check_if_int(answer)== False:
-    #     print('Your answer cannot contain anything other than numbers. Please try again: ')
-    #     operation = f"{a} + {b}"
-    #     answer = input ('\n'+operation + ' = ')
+
     while check_if_int(answer) == False:
-        must_return_int(answer, operation)
+        answer = input ('\n'+operation + ' = ')
+
     if eval(operation) == int(answer):
         return('Excellent!')
+
     else:
         append_wrong_answer(answer, operation)
         return(f'Incorrect. The correct answer is {eval(operation)}.')
@@ -48,16 +48,15 @@ def addition(a, b):
 def subtraction(a, b):
     if difficulty == 'easy':
         while b>a:
-            x1 = difficulty_lvls.get('easy')[0][0]
-            x2 = difficulty_lvls.get('easy')[0][-1]
-            a = randint(x1, x2)
-            b = randint(x1, x2)
+            x1,x2 = difficulty_lvls['easy'][0][0], difficulty_lvls['easy'][0][-1]
+            a, b= randint(x1, x2), randint(x1, x2)
+
     operation = f"{a} - {b}"
     answer = input (operation + ' = ')
-    # I've got an issue here, negative inputs fail the .isdigit() test
-    while check_if_int(answer)== False:
-        print('Your answer cannot contain anything other than numbers. Please try again: ')
-        operation = f"{a} - {b}"
+
+    # while check_if_int(answer) == False:
+    #     if_not_int(answer, operation)
+    while check_if_int(answer) == False:
         answer = input ('\n'+operation + ' = ')
 
     if eval(operation) == int(answer):
@@ -70,31 +69,15 @@ def subtraction(a, b):
 def multiplication(a, b):
     operation = f"{a} * {b}"
     answer = input(operation + ' = ')
-    while check_if_int(answer)== False:
-        print('Your answer cannot contain anything other than numbers. Please try again: ')
-        operation = f"{a} * {b}"
+    # while check_if_int(answer) == False:
+    #     if_not_int(answer, operation)
+    while check_if_int(answer) == False:
         answer = input ('\n'+operation + ' = ')
     if eval(operation) == int(answer):
         return(f'Good job, {name}!')
     else: 
         append_wrong_answer(answer, operation)
         return(f'Incorrect. The correct answer is {eval(operation)}.')
-
-# def division(a, b):
-#     division = f"{a} / {b}"
-#     while a%b !=0:
-#         y1 = difficulty_lvls.get(difficulty)[-1][0]
-#         y2 = difficulty_lvls.get(difficulty)[-1][-1]
-#         b = randint(x1, x2)
-#     answer = input(division + ' = ')
-#     while answer.isdigit() == False:
-#         print('Your answer cannot contain anything other than numbers. Please try again: ')
-#         division = f"{a} / {b}"
-#         answer = input ('\n'+division + ' = ')
-#     if int(eval(division)) == int(answer):
-#         return(f'Good job, {name}!')
-#     else:
-#         return(f'Incorrect. The correct answer is {int(eval(division))}.')
 
 #                           *Actual game:*
 
@@ -112,22 +95,20 @@ difficulty_lvls = {
 
 name = input('Please enter your name: ').title()
 difficulty = input("Difficulty level (easy, intermediate, difficult, expert): ")
+while difficulty in difficulty_lvls == False:
+    difficulty = input("\nYou chose a non-existent level."\
+        "Please try again(easy, intermediate, difficult, expert): ")
 
 with open(file_name) as f:
     contents = f.read()
 
 with open(file_name, 'a') as f:
     if current_time not in contents:
-        f.write(current_time + ': \n')
-    # if name not in contents:
-    f.write('\n'+name+': \n')
-    f.write('\t'+difficulty+'\n')
+        f.write(current_time + ': \n')      
+    f.write('\n'+name+':')
+    f.write('\n\t'+difficulty.title()+'\n')
 
 lst = ['addition', 'subtraction', 'multiplication']
-
-while difficulty in difficulty_lvls == False:
-    difficulty = input("\nYou chose a non-existent level."\
-        "Please try again(easy, intermediate, difficult, expert): ")
 
 greeting = (f"\nHello, {name}. You'll be given a chance to exit this program "\
 " and level up after every 5 attempts. Let's begin! \n")
@@ -137,15 +118,12 @@ i = 0
 while True:
 
     if i%5==0:
-        x1 = difficulty_lvls.get(difficulty)[0][0]
-        x2 = difficulty_lvls.get(difficulty)[0][-1]
-        y1 = difficulty_lvls.get(difficulty)[-1][0]
-        y2 = difficulty_lvls.get(difficulty)[-1][-1]
+        d=difficulty
+        x1,x2=difficulty_lvls[d][0][0], difficulty_lvls[d][0][-1]
+        y1,y2=difficulty_lvls[d][-1][0], difficulty_lvls[d][-1][-1]
 # The issue here is that randint does not accept ranges
-    a1 = randint(x1, x2)
-    a2 = randint(x1, x2)
-    m1 = randint(y1, y2)
-    m2 = randint(y1, y2)
+    a1,a2 = randint(x1, x2), randint(x1, x2)
+    m1,m2 = randint(y1, y2), randint(y1, y2)
 
     '''Randomizer'''
     chosen = choice(lst)
@@ -173,7 +151,7 @@ while True:
                 difficulty = list(difficulty_lvls.keys())[next_index]
                 print(f"\nNew difficulty level: {difficulty.title()}\n")
                 with open(file_name, 'a') as f:
-                    f.write("--"+difficulty+"--\n")
+                    f.write('\n\t'+difficulty.title()+'\n')
 
 
 # print("Oof, doesn't look like you're doing so well. Would you like to change the difficulty level?")
